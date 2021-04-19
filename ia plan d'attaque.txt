@@ -1,0 +1,16 @@
+regarder chaque case ou ia a jouer et mettre à 1
+
+checkIaWin
+si ia1 + ia2 + ia3 == 2
+	si 1 !=joueur et 2 !=joueur et 3!= joueur
+		if 1 = v
+			go 1
+		if 2 = v
+			go 2
+		if 3 = v
+			go 3
+
+si 4 + 5 + 6 == 2
+	same 456
+
+checkIaCounter
