@@ -1,14 +1,15 @@
 import pygame, pygame_menu
 from pygame_menu.examples import create_example_window
 import mysql.connector
+import bddConfig
 
 def pseudo_menu(screen, width, newGame):
 
     mydb = mysql.connector.connect(
-        host = "localhost",
-        user = "root",
-        password = "",
-        database = "pokoban"
+        host = bddConfig.bdd("getHost"),
+        user = bddConfig.bdd("getUser"),
+        password = bddConfig.bdd("getPassword"),
+        database = bddConfig.bdd("getDatabase")
     )
     
     pygame.init()
@@ -289,10 +290,10 @@ def stats_menu(screen, width, newGame):
     selected = "route01"
 
     mydb = mysql.connector.connect(
-        host = "localhost",
-        user = "root",
-        password = "",
-        database = "pokoban"
+        host = bddConfig.bdd("getHost"),
+        user = bddConfig.bdd("getUser"),
+        password = bddConfig.bdd("getPassword"),
+        database = bddConfig.bdd("getDatabase")
     )
 
     mycursor = mydb.cursor()

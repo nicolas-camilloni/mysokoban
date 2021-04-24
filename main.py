@@ -50,6 +50,8 @@ while True:
             pygame.mixer.music.load('songs/routes/route1.wav')
         elif newGame.map == "route101":
             pygame.mixer.music.load('songs/routes/route101.wav')
+        elif newGame.map == "route104":
+            pygame.mixer.music.load('songs/routes/route104.wav')
         pygame.mixer.music.set_volume(0.1)
         pygame.mixer.music.play(-1)
         game.game(newGame, gameScreen)

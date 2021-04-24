@@ -1,6 +1,7 @@
 from copy import copy, deepcopy
 import pygame, os
 import mysql.connector
+import bddConfig
 
 def game(newGame, screen):
 
@@ -21,6 +22,16 @@ def game(newGame, screen):
     waterRightImage = pygame.image.load("tiles/water-right.png").convert_alpha()
     waterHorizonImage = pygame.image.load("tiles/water-horizon.png").convert_alpha()
     waterVerticalImage = pygame.image.load("tiles/water-vertical.png").convert_alpha()
+    areneLeftImage = pygame.image.load("tiles/arene-left.png").convert_alpha()
+    areneCenterImage = pygame.image.load("tiles/arene-center.png").convert_alpha()
+    areneRightImage = pygame.image.load("tiles/arene-right.png").convert_alpha()
+    pilierImage = pygame.image.load("tiles/pilier.png").convert_alpha()
+    banquetteImage = pygame.image.load("tiles/banquette.png").convert_alpha()
+    centerImage = pygame.image.load("tiles/center.png").convert_alpha()
+    centerLeftImage = pygame.image.load("tiles/center-left.png").convert_alpha()
+    centerRightImage = pygame.image.load("tiles/center-right.png").convert_alpha()
+    maisonBleuImage = pygame.image.load("tiles/maison-bleu.png").convert_alpha()
+    arbreImage = pygame.image.load("tiles/arbre.png").convert_alpha()
 
     # Pokemons
     psyduckImage = pygame.image.load("pokemons/psyduck.png").convert_alpha()
@@ -28,6 +39,7 @@ def game(newGame, screen):
     arcaninImage = pygame.image.load("pokemons/arcanin.png").convert_alpha()
     arckoImage = pygame.image.load("pokemons/arcko.png").convert_alpha()
     dracaufeuImage = pygame.image.load("pokemons/dracaufeu.png").convert_alpha()
+    rayquazaImage = pygame.image.load("pokemons/rayquaza.png").convert_alpha()
 
     # Sprites joueur
     dresseur1R1Image = pygame.image.load("chars/dresseur1-r1.png").convert_alpha()
@@ -116,6 +128,36 @@ def game(newGame, screen):
                     screen.blit(waterHorizonImage, (75*i, 75*j))
                 elif map[j][i] == 11:
                     screen.blit(waterVerticalImage, (75*i, 75*j))
+                elif map[j][i] == 12:
+                    screen.blit(grassImage, (75*i, 75*j))
+                    screen.blit(areneLeftImage, (75*i, 75*j))
+                elif map[j][i] == 13:
+                    screen.blit(grassImage, (75*i, 75*j))
+                    screen.blit(areneCenterImage, (75*i, 75*j))
+                elif map[j][i] == 14:
+                    screen.blit(grassImage, (75*i, 75*j))
+                    screen.blit(areneRightImage, (75*i, 75*j))
+                elif map[j][i] == 15:
+                    screen.blit(grassImage, (75*i, 75*j))
+                    screen.blit(pilierImage, (75*i, 75*j))
+                elif map[j][i] == 16:
+                    screen.blit(grassImage, (75*i, 75*j))
+                    screen.blit(centerImage, (75*i, 75*j))
+                elif map[j][i] == 17:
+                    screen.blit(grassImage, (75*i, 75*j))
+                    screen.blit(centerLeftImage, (75*i, 75*j))
+                elif map[j][i] == 18:
+                    screen.blit(grassImage, (75*i, 75*j))
+                    screen.blit(centerRightImage, (75*i, 75*j))
+                elif map[j][i] == 19:
+                    screen.blit(grassImage, (75*i, 75*j))
+                    screen.blit(banquetteImage, (75*i, 75*j))
+                elif map[j][i] == 20:
+                    screen.blit(grassImage, (75*i, 75*j))
+                    screen.blit(maisonBleuImage, (75*i, 75*j))
+                elif map[j][i] == 21:
+                    screen.blit(grassImage, (75*i, 75*j))
+                    screen.blit(arbreImage, (75*i, 75*j))
                 elif map[j][i] == 51:
                     screen.blit(grassImage, (75*i, 75*j))
                     screen.blit(dresseur1R1Image, (75*i, 75*j))
@@ -161,6 +203,9 @@ def game(newGame, screen):
                 elif map[j][i] == 105:
                     screen.blit(grassImage, (75*i, 75*j))
                     screen.blit(dracaufeuImage, (75*i, 75*j))
+                elif map[j][i] == 106:
+                    screen.blit(grassImage, (75*i, 75*j))
+                    screen.blit(rayquazaImage, (75*i, 75*j))
                 i += 1
             i = 0
             j += 1
@@ -188,10 +233,10 @@ def game(newGame, screen):
             screen.blit(textsurfacemenu,(284,440))
 
             mydb = mysql.connector.connect(
-                host = "localhost",
-                user = "root",
-                password = "",
-                database = "pokoban"
+                host = bddConfig.bdd("getHost"),
+                user = bddConfig.bdd("getUser"),
+                password = bddConfig.bdd("getPassword"),
+                database = bddConfig.bdd("getDatabase")
             )
 
             mycursor = mydb.cursor()
@@ -244,10 +289,6 @@ def game(newGame, screen):
                     actuamVolume = pygame.mixer.music.get_volume()
                     if actuamVolume >= 0:
                         pygame.mixer.music.set_volume(actuamVolume+0.1)
-                if event.key != 114 and event.key != 122 and event.key != 49 and event.key != 50 and event.key != 51 and event.key != 52:
-                    lastTry = deepcopy(map)
-                    lastKey = event.key
-                    resetPossible = True
                 if event.key == 114:
                     # Touche : R
                     map = deepcopy(mapSave)
@@ -297,6 +338,9 @@ def game(newGame, screen):
                             if pokeballPosY > 0:
                                 # faire condition si deux pokeballs à côté
                                 if map[nextPokeballPosY][pokeballPosX] == 0:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     map[nextPokeballPosY][pokeballPosX] = pokemonCaptured
                                     resultMap[pokeballPosY][pokeballPosX] = 1
                                     if mapSave[playerPosY][playerPosX] == 4:
@@ -315,7 +359,11 @@ def game(newGame, screen):
                                     print(1)
                                     playerPosY -= 1
                                     print(map)
+                                    resetPossible = True
                                 if map[nextPokeballPosY][pokeballPosX] == 4:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     map[nextPokeballPosY][pokeballPosX] = 5
                                     resultMap[nextPokeballPosY][pokeballPosX] = 2
                                     resultMap[pokeballPosY][pokeballPosX] = 1
@@ -335,7 +383,10 @@ def game(newGame, screen):
                                     print(1)
                                     playerPosY -= 1
                         # Si le joueur avance sur une pokéball vide ou de la terre
-                        elif map[nextPlayerPosY][playerPosX] != 1 and map[nextPlayerPosY][playerPosX] != 3 and map[nextPlayerPosY][playerPosX] != 5 and map[nextPlayerPosY][playerPosX] < 101:
+                        elif map[nextPlayerPosY][playerPosX] != 1 and map[nextPlayerPosY][playerPosX] != 3 and map[nextPlayerPosY][playerPosX] != 5 and map[nextPlayerPosY][playerPosX] < 101 and map[nextPlayerPosY][playerPosX] <= 6:
+                            lastTry = deepcopy(map)
+                            lastKey = event.key
+                            resetPossible = True
                             if mapSave[playerPosY][playerPosX] == 4:
                                 if resultMap[playerPosY][playerPosX] == 2:
                                     map[playerPosY][playerPosX] = 5
@@ -356,7 +407,10 @@ def game(newGame, screen):
                             pokemonPosY = nextPlayerPosY
                             nextPokemonPosY = nextPlayerPosY-1
                             if pokemonPosY > 0:
-                                if map[nextPokemonPosY][pokemonPosX] != 1 and map[nextPokemonPosY][pokemonPosX] != 3 and map[nextPokemonPosY][pokemonPosX] != 5 and map[nextPokemonPosY][pokemonPosX] < 101:
+                                if map[nextPokemonPosY][pokemonPosX] != 1 and map[nextPokemonPosY][pokemonPosX] != 3 and map[nextPokemonPosY][pokemonPosX] != 5 and map[nextPokemonPosY][pokemonPosX] < 101 and map[nextPokemonPosY][pokemonPosX] <= 6:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     if map[nextPokemonPosY][pokemonPosX] == 4:
                                         map[nextPokemonPosY][pokemonPosX] = 5
                                         pokemonCaptured = map[pokemonPosY][pokemonPosX]
@@ -389,6 +443,9 @@ def game(newGame, screen):
                             nextPokeballPosX = nextPlayerPosX+1
                             if pokeballPosX < 15:
                                 if map[pokeballPosY][nextPokeballPosX] == 0:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     map[pokeballPosY][nextPokeballPosX] = pokemonCaptured
                                     resultMap[pokeballPosY][pokeballPosX] = 1
                                     if mapSave[playerPosY][playerPosX] == 4:
@@ -408,6 +465,9 @@ def game(newGame, screen):
                                     playerPosX += 1
                                     print(map)
                                 if map[pokeballPosY][nextPokeballPosX] == 4:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     map[pokeballPosY][nextPokeballPosX] = 5
                                     resultMap[pokeballPosY][nextPokeballPosX] = 2
                                     resultMap[pokeballPosY][pokeballPosX] = 1
@@ -427,7 +487,10 @@ def game(newGame, screen):
                                     print(1)
                                     playerPosX += 1
                         # Si le joueur avance sur une pokéball vide ou de la terre
-                        elif map[playerPosY][nextPlayerPosX] != 1 and map[playerPosY][nextPlayerPosX] != 3 and map[playerPosY][nextPlayerPosX] != 5 and map[playerPosY][nextPlayerPosX] < 101:
+                        elif map[playerPosY][nextPlayerPosX] != 1 and map[playerPosY][nextPlayerPosX] != 3 and map[playerPosY][nextPlayerPosX] != 5 and map[playerPosY][nextPlayerPosX] < 101 and map[playerPosY][nextPlayerPosX] <= 6:
+                            lastTry = deepcopy(map)
+                            lastKey = event.key
+                            resetPossible = True
                             if mapSave[playerPosY][playerPosX] == 4:
                                 if resultMap[playerPosY][playerPosX] == 2:
                                     map[playerPosY][playerPosX] = 5
@@ -450,7 +513,10 @@ def game(newGame, screen):
                             pokemonPosY = playerPosY
                             nextPokemonPosX = nextPlayerPosX+1
                             if pokemonPosX < 15:
-                                if map[pokemonPosY][nextPokemonPosX] != 1 and map[pokemonPosY][nextPokemonPosX] != 3 and map[pokemonPosY][nextPokemonPosX] != 5 and map[pokemonPosY][nextPokemonPosX] < 101:
+                                if map[pokemonPosY][nextPokemonPosX] != 1 and map[pokemonPosY][nextPokemonPosX] != 3 and map[pokemonPosY][nextPokemonPosX] != 5 and map[pokemonPosY][nextPokemonPosX] < 101 and map[pokemonPosY][nextPokemonPosX] <= 6:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     if map[pokemonPosY][nextPokemonPosX] == 4:
                                         map[pokemonPosY][nextPokemonPosX] = 5
                                         pokemonCaptured = map[pokemonPosY][pokemonPosX]
@@ -483,6 +549,9 @@ def game(newGame, screen):
                             nextPokeballPosY = nextPlayerPosY+1
                             if pokeballPosY < 11:
                                 if map[nextPokeballPosY][pokeballPosX] == 0:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     map[nextPokeballPosY][pokeballPosX] = pokemonCaptured
                                     resultMap[pokeballPosY][pokeballPosX] = 1
                                     if mapSave[playerPosY][playerPosX] == 4:
@@ -502,6 +571,9 @@ def game(newGame, screen):
                                     playerPosY += 1
                                     print(map)
                                 if map[nextPokeballPosY][pokeballPosX] == 4:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     map[nextPokeballPosY][pokeballPosX] = 5
                                     resultMap[nextPokeballPosY][pokeballPosX] = 2
                                     resultMap[pokeballPosY][pokeballPosX] = 1
@@ -521,7 +593,10 @@ def game(newGame, screen):
                                     print(1)
                                     playerPosY += 1
                         # Si le joueur avance sur une pokéball vide ou de la terre
-                        elif map[nextPlayerPosY][playerPosX] != 1 and map[nextPlayerPosY][playerPosX] != 3 and map[nextPlayerPosY][playerPosX] != 5 and map[nextPlayerPosY][playerPosX] < 101:
+                        elif map[nextPlayerPosY][playerPosX] != 1 and map[nextPlayerPosY][playerPosX] != 3 and map[nextPlayerPosY][playerPosX] != 5 and map[nextPlayerPosY][playerPosX] < 101 and map[nextPlayerPosY][playerPosX] <= 6:
+                            lastTry = deepcopy(map)
+                            lastKey = event.key
+                            resetPossible = True
                             if mapSave[playerPosY][playerPosX] == 4:
                                 if resultMap[playerPosY][playerPosX] == 2:
                                     map[playerPosY][playerPosX] = 5
@@ -542,7 +617,10 @@ def game(newGame, screen):
                             pokemonPosY = nextPlayerPosY
                             nextPokemonPosY = nextPlayerPosY+1
                             if pokemonPosY < 11:
-                                if map[nextPokemonPosY][pokemonPosX] != 1 and map[nextPokemonPosY][pokemonPosX] != 3 and map[nextPokemonPosY][pokemonPosX] != 5 and map[nextPokemonPosY][pokemonPosX] < 101:
+                                if map[nextPokemonPosY][pokemonPosX] != 1 and map[nextPokemonPosY][pokemonPosX] != 3 and map[nextPokemonPosY][pokemonPosX] != 5 and map[nextPokemonPosY][pokemonPosX] < 101 and map[nextPokemonPosY][pokemonPosX] <= 6:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     if map[nextPokemonPosY][pokemonPosX] == 4:
                                         pokemonCaptured = map[pokemonPosY][pokemonPosX]
                                         map[nextPokemonPosY][pokemonPosX] = 5
@@ -574,6 +652,9 @@ def game(newGame, screen):
                             nextPokeballPosX = nextPlayerPosX-1
                             if pokeballPosX > 0:
                                 if map[pokeballPosY][nextPokeballPosX] == 0:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     map[pokeballPosY][nextPokeballPosX] = pokemonCaptured
                                     resultMap[pokeballPosY][pokeballPosX] = 1
                                     if mapSave[playerPosY][playerPosX] == 4:
@@ -593,6 +674,9 @@ def game(newGame, screen):
                                     playerPosX -= 1
                                     print(map)
                                 if map[pokeballPosY][nextPokeballPosX] == 4:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     map[pokeballPosY][nextPokeballPosX] = 5
                                     resultMap[pokeballPosY][nextPokeballPosX] = 2
                                     resultMap[pokeballPosY][pokeballPosX] = 1
@@ -612,7 +696,10 @@ def game(newGame, screen):
                                     print(1)
                                     playerPosX -= 1
                         # Si le joueur avance sur une pokéball vide ou de la terre
-                        elif map[playerPosY][nextPlayerPosX] != 1 and map[playerPosY][nextPlayerPosX] != 3 and map[playerPosY][nextPlayerPosX] != 5 and map[playerPosY][nextPlayerPosX] < 101:
+                        elif map[playerPosY][nextPlayerPosX] != 1 and map[playerPosY][nextPlayerPosX] != 3 and map[playerPosY][nextPlayerPosX] != 5 and map[playerPosY][nextPlayerPosX] < 101 and map[playerPosY][nextPlayerPosX] <= 6:
+                            lastTry = deepcopy(map)
+                            lastKey = event.key
+                            resetPossible = True
                             print(resultMap[playerPosY][playerPosX])
                             if mapSave[playerPosY][playerPosX] == 4:
                                 if resultMap[playerPosY][playerPosX] == 2:
@@ -634,7 +721,10 @@ def game(newGame, screen):
                             pokemonPosY = playerPosY
                             nextPokemonPosX = nextPlayerPosX-1
                             if pokemonPosX > 0:
-                                if map[pokemonPosY][nextPokemonPosX] != 1 and map[pokemonPosY][nextPokemonPosX] != 3 and map[pokemonPosY][nextPokemonPosX] != 5 and map[pokemonPosY][nextPokemonPosX] < 101:
+                                if map[pokemonPosY][nextPokemonPosX] != 1 and map[pokemonPosY][nextPokemonPosX] != 3 and map[pokemonPosY][nextPokemonPosX] != 5 and map[pokemonPosY][nextPokemonPosX] < 101 and map[pokemonPosY][nextPokemonPosX] <= 6:
+                                    lastTry = deepcopy(map)
+                                    lastKey = event.key
+                                    resetPossible = True
                                     if map[pokemonPosY][nextPokemonPosX] == 4:
                                         pokemonCaptured = map[pokemonPosY][pokemonPosX]
                                         map[pokemonPosY][nextPokemonPosX] = 5
